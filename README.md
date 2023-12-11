@@ -7,7 +7,7 @@ This plugin allows you to ask your local LLM about your own notes.
 Indexing is slow and hard to do in JS. Therefore you will need to run a lightweight
 python server to do the indexing for you next to your ollama.
 
-TODO
+For more information about progress and install see: https://github.com/brumik/ollama-obsidian-indexer
 
 ## Features:
 
