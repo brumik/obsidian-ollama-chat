@@ -1,6 +1,6 @@
-import { FileSystemAdapter } from "obsidian";
+import { FileSystemAdapter, App } from "obsidian";
 
-export const getFilesystemPath = (path: string = '/') => {
+export const getFilesystemPath = (app: App, path: string = '/') => {
   const adapter = app.vault.adapter;
   if (adapter instanceof FileSystemAdapter) {
       return adapter.getBasePath() + path

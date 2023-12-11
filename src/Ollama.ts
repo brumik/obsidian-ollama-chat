@@ -64,24 +64,24 @@ export class Ollama extends Plugin {
   }
 
   private async runStartupIndexing() {
-    this.requestIndexing("POST", getFilesystemPath());
+    this.requestIndexing("POST", getFilesystemPath(this.app));
   }
 
   private async createEvent(file: TAbstractFile) {
-    this.requestIndexing("PATCH", getFilesystemPath(file.path));
+    this.requestIndexing("PATCH", getFilesystemPath(this.app, file.path));
   }
 
  private async deleteEvent(file: TAbstractFile) {
-    this.requestIndexing("DELETE", getFilesystemPath(file.path));
+    this.requestIndexing("DELETE", getFilesystemPath(this.app, file.path));
   }
 
  private async modifyEvent(file: TAbstractFile) {
-    this.requestIndexing("PATCH", getFilesystemPath(file.path));
+    this.requestIndexing("PATCH", getFilesystemPath(this.app, file.path));
   }
 
  private async renameEvent(file: TAbstractFile, oldPath: string) {
-    this.requestIndexing("PATCH", getFilesystemPath(file.path));
-    this.requestIndexing("DELETE", getFilesystemPath(oldPath));
+    this.requestIndexing("PATCH", getFilesystemPath(this.app, file.path));
+    this.requestIndexing("DELETE", getFilesystemPath(this.app, oldPath));
   }
 
 }
