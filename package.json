@@ -27,5 +27,9 @@
     "obsidian": "1.4.11",
     "tslib": "2.6.2",
     "typescript": "5.2.2"
+  },
+  "dependencies": {
+    "faiss-node": "^0.5.1",
+    "langchain": "^0.0.212"
   }
 }
