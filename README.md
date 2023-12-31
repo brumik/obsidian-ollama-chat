@@ -1,3 +1,11 @@
+# Problem with this branch
+
+I trasported the buisness logic of indexing into the plugin, but reading the file
+or using a Faiss vector store (which can handle ids too) needs a node environmnet.
+
+Obsidian plugins are running in "browser" environment (electron) therefore this is
+not usable. 
+
 # 🦙 Obsidian Ollama Chat
 
 This plugin allows you to ask your local LLM about your own notes.

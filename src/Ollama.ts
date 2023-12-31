@@ -1,24 +1,23 @@
-import { Notice, Plugin, TAbstractFile, requestUrl } from "obsidian";
+import { Plugin, TAbstractFile } from "obsidian";
 import { OllamaSettingTab } from "OllamaSettingTab";
 import { DEFAULT_SETTINGS } from "data/defaultSettings";
 import { OllamaSettings } from "model/OllamaSettings";
-import { getFilesystemPath } from "service/getFilesystemPath";
 import { ChatModal } from "modal/ChatModal";
+import LangChainPlugin from 'service/LangChainPlugin';
 
 export class Ollama extends Plugin {
   settings: OllamaSettings;
 
   async onload() {
     await this.loadSettings();
-    this.runStartupIndexing();
-    this.registerEvents()
     this.addPromptCommands();
     this.addSettingTab(new OllamaSettingTab(this.app, this));
+    this.registerEvents();
   }
 
   private registerEvents() {
+    this.registerEvent(this.app.vault.on('create', this.createEvent));
     this.app.workspace.onLayoutReady(() => {
-      this.registerEvent(this.app.vault.on('create', this.createEvent));
       this.registerEvent(this.app.vault.on('delete', this.deleteEvent));
       this.registerEvent(this.app.vault.on('modify', this.modifyEvent));
       this.registerEvent(this.app.vault.on('rename', this.renameEvent));
@@ -45,43 +44,21 @@ export class Ollama extends Plugin {
     await this.saveData(this.settings);
   }
 
-  private async requestIndexing(method: 'POST' | 'PATCH' | 'DELETE', filePath: string) {
-    requestUrl({
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      url: `${this.settings.llamaIndexUrl}/indexing`,
-      body: JSON.stringify({
-        path: filePath
-      })
-    })
-    .then(response => new Notice(`Ollama indexing: ${response.text}`))
-    .catch((error) => {
-      new Notice(`Error while indexing the store ${error}`);
-    })
- 
-  }
-
-  private async runStartupIndexing() {
-    this.requestIndexing("POST", getFilesystemPath(this.app));
-  }
-
   private async createEvent(file: TAbstractFile) {
-    this.requestIndexing("PATCH", getFilesystemPath(this.app, file.path));
+    LangChainPlugin.indexFile(file.path);
   }
 
  private async deleteEvent(file: TAbstractFile) {
-    this.requestIndexing("DELETE", getFilesystemPath(this.app, file.path));
+    LangChainPlugin.deleteIndex(file.path);
   }
 
  private async modifyEvent(file: TAbstractFile) {
-    this.requestIndexing("PATCH", getFilesystemPath(this.app, file.path));
+    LangChainPlugin.indexFile(file.path);
   }
 
  private async renameEvent(file: TAbstractFile, oldPath: string) {
-    this.requestIndexing("PATCH", getFilesystemPath(this.app, file.path));
-    this.requestIndexing("DELETE", getFilesystemPath(this.app, oldPath));
+    LangChainPlugin.indexFile(file.path);
+    LangChainPlugin.deleteIndex(oldPath);
   }
 
 }
