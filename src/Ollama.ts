@@ -1,8 +1,7 @@
-import { Notice, Plugin, TAbstractFile, requestUrl } from "obsidian";
+import { Notice, Plugin, requestUrl, TAbstractFile } from "obsidian";
 import { OllamaSettingTab } from "OllamaSettingTab";
 import { DEFAULT_SETTINGS } from "data/defaultSettings";
 import { OllamaSettings } from "model/OllamaSettings";
-import { getFilesystemPath } from "service/getFilesystemPath";
 import { ChatModal } from "modal/ChatModal";
 
 export class Ollama extends Plugin {
@@ -11,18 +10,18 @@ export class Ollama extends Plugin {
   async onload() {
     await this.loadSettings();
     this.runStartupIndexing();
-    this.registerEvents()
+    this.registerEvents();
     this.addPromptCommands();
     this.addSettingTab(new OllamaSettingTab(this.app, this));
   }
 
   private registerEvents() {
     this.app.workspace.onLayoutReady(() => {
-      this.registerEvent(this.app.vault.on('create', this.createEvent));
-      this.registerEvent(this.app.vault.on('delete', this.deleteEvent));
-      this.registerEvent(this.app.vault.on('modify', this.modifyEvent));
-      this.registerEvent(this.app.vault.on('rename', this.renameEvent));
-    });   
+      this.registerEvent(this.app.vault.on("create", this.createEvent.bind(this)));
+      this.registerEvent(this.app.vault.on("delete", this.deleteEvent.bind(this)));
+      this.registerEvent(this.app.vault.on("modify", this.modifyEvent.bind(this)));
+      this.registerEvent(this.app.vault.on("rename", this.renameEvent.bind(this)));
+    });
   }
 
   private addPromptCommands() {
@@ -45,7 +44,10 @@ export class Ollama extends Plugin {
     await this.saveData(this.settings);
   }
 
-  private async requestIndexing(method: 'POST' | 'PATCH' | 'DELETE', filePath: string) {
+  private async requestIndexing(
+    method: "POST" | "PATCH" | "DELETE",
+    filePath: string,
+  ) {
     requestUrl({
       method,
       headers: {
@@ -53,35 +55,33 @@ export class Ollama extends Plugin {
       },
       url: `${this.settings.llamaIndexUrl}/indexing`,
       body: JSON.stringify({
-        path: filePath
-      })
+        path: filePath,
+      }),
     })
-    .then(response => new Notice(`Ollama indexing: ${response.text}`))
-    .catch((error) => {
-      new Notice(`Error while indexing the store ${error}`);
-    })
- 
+      .then((response) => new Notice(`Ollama indexing: ${response.text}`))
+      .catch((error) => {
+        new Notice(`Error while indexing the store ${error}`);
+      });
   }
 
   private async runStartupIndexing() {
-    this.requestIndexing("POST", getFilesystemPath(this.app));
+    this.requestIndexing("POST", "");
   }
 
   private async createEvent(file: TAbstractFile) {
-    this.requestIndexing("PATCH", getFilesystemPath(this.app, file.path));
+    this.requestIndexing("PATCH", file.path);
   }
 
- private async deleteEvent(file: TAbstractFile) {
-    this.requestIndexing("DELETE", getFilesystemPath(this.app, file.path));
+  private async deleteEvent(file: TAbstractFile) {
+    this.requestIndexing("DELETE", file.path);
   }
 
- private async modifyEvent(file: TAbstractFile) {
-    this.requestIndexing("PATCH", getFilesystemPath(this.app, file.path));
+  private async modifyEvent(file: TAbstractFile) {
+    this.requestIndexing("PATCH", file.path);
   }
 
- private async renameEvent(file: TAbstractFile, oldPath: string) {
-    this.requestIndexing("PATCH", getFilesystemPath(this.app, file.path));
-    this.requestIndexing("DELETE", getFilesystemPath(this.app, oldPath));
+  private async renameEvent(file: TAbstractFile, oldPath: string) {
+    this.requestIndexing("PATCH", file.path);
+    this.requestIndexing("DELETE", oldPath);
   }
-
 }
