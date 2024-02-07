@@ -2,6 +2,8 @@
 
 This plugin allows you to ask your local LLM about your own notes.
 
+Ollama plugin link: https://obsidian.md/plugins?id=ollama-chat
+
 ## Requirements:
 
 Indexing is slow and hard to do in JS. Therefore you will need to run a lightweight
