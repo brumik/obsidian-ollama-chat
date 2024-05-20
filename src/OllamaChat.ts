@@ -3,11 +3,13 @@ import { OllamaSettingTab } from "OllamaSettingTab";
 import { DEFAULT_SETTINGS } from "data/defaultSettings";
 import { OllamaSettings } from "model/OllamaSettings";
 import { ChatModal } from "modal/ChatModal";
+import llm from './llm';
 
-export class Ollama extends Plugin {
+export class OllamaChat extends Plugin {
   settings: OllamaSettings;
 
   async onload() {
+    llm();
     await this.loadSettings();
     this.runStartupIndexing();
     this.registerEvents();
@@ -30,6 +32,13 @@ export class Ollama extends Plugin {
       name: "AI Chat",
       callback: () => {
         new ChatModal(this.app, this.settings.llamaIndexUrl).open();
+      },
+    });
+    this.addCommand({
+      id: "ask-your-ai-test",
+      name: "Node test",
+      callback: () => {
+        llm();
       },
     });
   }

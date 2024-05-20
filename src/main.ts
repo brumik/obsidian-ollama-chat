@@ -1,3 +1,3 @@
-import { Ollama } from "./Ollama";
+import { OllamaChat } from "./OllamaChat";
 
-export default Ollama;
+export default OllamaChat;

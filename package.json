@@ -19,13 +19,18 @@
   "author": "brumik",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "20.6.2",
+    "@types/node": "^20.6.2",
     "@typescript-eslint/eslint-plugin": "6.7.2",
     "@typescript-eslint/parser": "6.7.2",
     "builtin-modules": "3.3.0",
     "esbuild": "0.19.3",
     "obsidian": "1.4.11",
     "tslib": "2.6.2",
-    "typescript": "5.2.2"
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "llamaindex": "^0.3.12",
+    "ollama": "^0.5.1",
+    "punycode": "^2.3.1"
   }
 }
