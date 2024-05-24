@@ -11,6 +11,11 @@ python server to do the indexing for you next to your ollama.
 
 For more information about progress and install see: https://github.com/brumik/ollama-obsidian-indexer
 
+The https://github.com/brumik/obsidian-ollama-chat/tree/move-llama-inhouse branch does not need the above server to run
+but it is slower and less developed in general. If you cannot run the python server though you might find it useful.
+
+To install the branch you need to build the plugin with `npm run build` and copy it to your obsidian install manually.
+
 ## Features:
 
 - Run your own model locally. Set the URL to this model and you roll
