@@ -1,10 +1,10 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import { Ollama } from "Ollama";
+import { OllamaChat } from "OllamaChat";
 
 export class OllamaSettingTab extends PluginSettingTab {
-  plugin: Ollama;
+  plugin: OllamaChat;
 
-  constructor(app: App, plugin: Ollama) {
+  constructor(app: App, plugin: OllamaChat) {
     super(app, plugin);
     this.plugin = plugin;
   }
@@ -15,14 +15,41 @@ export class OllamaSettingTab extends PluginSettingTab {
     containerEl.empty();
 
     new Setting(containerEl)
-      .setName("LlamaIndex Connector URL")
-      .setDesc("URL of the python server for indexing and query (e.g. http://localhost:5000)")
+      .setName("Ollama URL")
+      .setDesc("URL of the Ollama server running (e.g. http://localhost:11434)")
       .addText((text) =>
         text
-          .setPlaceholder("http://localhost:5000")
-          .setValue(this.plugin.settings.llamaIndexUrl)
+          .setPlaceholder("http://localhost:11434")
+          .setValue(this.plugin.settings.ollamaUrl)
           .onChange(async (value) => {
-            this.plugin.settings.llamaIndexUrl = value;
+            this.plugin.settings.ollamaUrl = value;
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Default model")
+      .setDesc("Name of the default ollama model to use for prompts")
+      .addText((text) =>
+        text
+          .setPlaceholder("mistral")
+          .setValue(this.plugin.settings.defaultModel)
+          .onChange(async (value) => {
+            this.plugin.settings.defaultModel = value;
+            await this.plugin.saveSettings();
+          })
+      );
+
+
+    new Setting(containerEl)
+      .setName("Default embed model")
+      .setDesc("Name of the default ollama model to use for calculating embedings")
+      .addText((text) =>
+        text
+          .setPlaceholder("mxbai-embed-large")
+          .setValue(this.plugin.settings.defaultEmbedModel)
+          .onChange(async (value) => {
+            this.plugin.settings.defaultEmbedModel = value;
             await this.plugin.saveSettings();
           })
       );

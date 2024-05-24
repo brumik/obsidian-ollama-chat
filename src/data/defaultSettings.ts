@@ -1,5 +1,7 @@
 import { OllamaSettings } from "model/OllamaSettings";
 
 export const DEFAULT_SETTINGS: OllamaSettings = {
-  llamaIndexUrl: "http://localhost:5000",
+  ollamaUrl: "http://localhost:11434",
+  defaultModel: "mistral",
+  defaultEmbedModel: "mxbai-embed-large",
 };

@@ -6,10 +6,9 @@ Ollama plugin link: https://obsidian.md/plugins?id=ollama-chat
 
 ## Requirements:
 
-Indexing is slow and hard to do in JS. Therefore you will need to run a lightweight
-python server to do the indexing for you next to your ollama.
-
-For more information about progress and install see: https://github.com/brumik/ollama-obsidian-indexer
+This branch tries to do indexing in JS/Node. This means that the plugin is bit slow to startup
+since the index is created on startup and file cache is not implemented yet, but you do not need
+to run a python server and you can just use ollama directly from your app.
 
 ## Features:
 

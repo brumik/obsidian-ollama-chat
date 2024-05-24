@@ -16,8 +16,8 @@ const context = await esbuild.context({
 		js: banner,
 	},
 	entryPoints: ["main.ts"],
-	bundle: true,
   platform: "node",
+	bundle: true,
 	external: [
 		"obsidian",
 		"electron",

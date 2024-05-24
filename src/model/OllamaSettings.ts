@@ -1,3 +1,5 @@
 export interface OllamaSettings {
-  llamaIndexUrl: string;
+  ollamaUrl: string;
+  defaultModel: string;
+  defaultEmbedModel: string;
 }

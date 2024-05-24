@@ -1,4 +1,5 @@
-import { MarkdownRenderer, Notice, Modal, requestUrl, App, MarkdownView } from "obsidian";
+import queryEngine from "QueryEngine";
+import { MarkdownRenderer, Notice, Modal, App, MarkdownView } from "obsidian";
 
 export class ChatModal extends Modal {
   result: string;
@@ -7,9 +8,8 @@ export class ChatModal extends Modal {
   input: HTMLInputElement;
   isLoading: boolean;
 
-  constructor(app: App, baseUrl: string) {
+  constructor(app: App) {
     super(app);
-    this.baseUrl = baseUrl;
     this.onClickHandler = this.onClickHandler.bind(this);
     this.isLoading = false;
   }
@@ -25,23 +25,14 @@ export class ChatModal extends Modal {
 			MarkdownView
 		) as MarkdownView;
 
-    requestUrl({
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      url: `${this.baseUrl}/`,
-      body: JSON.stringify({
-        query: this.input.value.trim()
-      })
-    })
+    queryEngine.query(this.input.value.trim())
     .then(response => {
       this.responseContainer.empty();
-      MarkdownRenderer.render(this.app, response.text, this.responseContainer, '/', view)
+      MarkdownRenderer.render(this.app, response, this.responseContainer, '/', view)
       this.input.value = "";
     })
     .catch((error) => {
-      new Notice(`Error while indexing the store ${error}`);
+      new Notice(`Error while doing the query: ${error}`);
     }).finally(() => {
       this.isLoading = false;
       this.input.disabled = false;

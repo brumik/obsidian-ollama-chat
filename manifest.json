@@ -5,5 +5,6 @@
   "minAppVersion": "0.15.0",
   "description": "Chat with your notes with the help of Ollama.",
   "author": "brumik",
-  "authorUrl": "https://github.com/brumik"
+  "authorUrl": "https://github.com/brumik",
+  "isDesktopOnly": true
 }
