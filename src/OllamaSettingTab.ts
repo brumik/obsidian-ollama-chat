@@ -26,5 +26,16 @@ export class OllamaSettingTab extends PluginSettingTab {
             await this.plugin.saveSettings();
           })
       );
+    new Setting(containerEl)
+      .setName("Success notifications (noisy)")
+      .setDesc("If enabled you will get a notification for successful reindexing. If disabled only errors are displayed.")
+      .addToggle((value) =>
+        value
+          .setValue(this.plugin.settings.allowSuccessNotifications)
+          .onChange(async (value) => {
+            this.plugin.settings.allowSuccessNotifications = value;
+            await this.plugin.saveSettings();
+          })
+      );
   }
 }

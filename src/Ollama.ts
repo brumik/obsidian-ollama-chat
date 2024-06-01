@@ -58,7 +58,10 @@ export class Ollama extends Plugin {
         path: filePath,
       }),
     })
-      .then((response) => new Notice(`Ollama indexing: ${response.text}`))
+      .then((response) => {
+        if (this.settings.allowSuccessNotifications)
+          new Notice(`Ollama indexing: ${response.text}`)
+      })
       .catch((error) => {
         new Notice(`Error while indexing the store ${error}`);
       });
