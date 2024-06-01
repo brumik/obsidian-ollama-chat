@@ -1,4 +1,4 @@
-import { Notice, Plugin, requestUrl, TAbstractFile } from "obsidian";
+import { Notice, Plugin, requestUrl, TAbstractFile, TFolder } from "obsidian";
 import { OllamaSettingTab } from "OllamaSettingTab";
 import { DEFAULT_SETTINGS } from "data/defaultSettings";
 import { OllamaSettings } from "model/OllamaSettings";
@@ -72,6 +72,10 @@ export class Ollama extends Plugin {
   }
 
   private async createEvent(file: TAbstractFile) {
+    // Makes no sense to index an empty folder.
+    if (file instanceof TFolder) {
+      return;
+    }
     this.requestIndexing("PATCH", file.path);
   }
 
