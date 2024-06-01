@@ -9,10 +9,16 @@ export class Ollama extends Plugin {
 
   async onload() {
     await this.loadSettings();
-    this.runStartupIndexing();
-    this.registerEvents();
-    this.addPromptCommands();
-    this.addSettingTab(new OllamaSettingTab(this.app, this));
+    
+    // Check if url can be reached
+    if (await this.healthcheck()) {
+      this.runStartupIndexing();
+      this.registerEvents();
+      this.addPromptCommands();
+      this.addSettingTab(new OllamaSettingTab(this.app, this));
+    } else {
+      new Notice(`The ${this.settings.llamaIndexUrl} is unreachable or not healthy. Skipping initialization.`);
+    }
   }
 
   private registerEvents() {
@@ -45,26 +51,37 @@ export class Ollama extends Plugin {
   }
 
   private async requestIndexing(
-    method: "POST" | "PATCH" | "DELETE",
-    filePath: string,
-  ) {
-    requestUrl({
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      url: `${this.settings.llamaIndexUrl}/indexing`,
-      body: JSON.stringify({
-        path: filePath,
-      }),
-    })
-      .then((response) => {
-        if (this.settings.allowSuccessNotifications)
-          new Notice(`Ollama indexing: ${response.text}`)
+    method: "GET" | "POST" | "PATCH" | "DELETE",
+    filePath?: string,
+  ): Promise<boolean> {
+    try {
+      const response = await requestUrl({
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        url: `${this.settings.llamaIndexUrl}/indexing`,
+        body: JSON.stringify({
+          path: filePath,
+        }),
       })
-      .catch((error) => {
-        new Notice(`Error while indexing the store ${error}`);
-      });
+
+      if (response.status !== 200) {
+        throw Error(response.text) 
+      }
+      
+      if (this.settings.allowSuccessNotifications)
+        new Notice(`Ollama indexing: ${response.text}`)
+
+      return true;
+    } catch (error) {
+      new Notice(`Error while indexing the store ${error}`);
+      return false;
+    };
+  }
+
+  private async healthcheck(): Promise<boolean> {
+    return await this.requestIndexing("GET")
   }
 
   private async runStartupIndexing() {
