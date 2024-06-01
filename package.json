@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node esbuild.config.mjs",
     "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-    "version": "node version-bump.mjs && git add manifest.json versions.json"
+    "version-bump": "node version-bump.mjs && git add manifest.json versions.json && git commit -am 'bump version' && git tag $(node -p -e `require('./package.json').version`)"
   },
   "keywords": [
     "obsidian",
