@@ -1,7 +1,7 @@
 {
 	"id": "ollama-chat",
 	"name": "Ollama Chat",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"minAppVersion": "0.15.0",
 	"description": "Chat with your notes with the help of Ollama.",
 	"author": "brumik",
