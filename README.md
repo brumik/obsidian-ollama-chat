@@ -31,3 +31,11 @@ To install the branch you need to build the plugin with `npm run build` and copy
 	- Summarize topic
 
 Any feature recommendation is welcome. 
+
+## Relase process
+
+- Create a new commit containing:
+    - updated version in `package.json`
+    - updated `versions.json` file
+- Create a new git tag matchig the version (`git tag 0.1.5`)
+- Push with tags (`git push --tag`)
