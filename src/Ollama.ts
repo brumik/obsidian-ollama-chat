@@ -9,15 +9,16 @@ export class Ollama extends Plugin {
 
   async onload() {
     await this.loadSettings();
-    
+    this.addSettingTab(new OllamaSettingTab(this.app, this));
+
     // Check if url can be reached
     if (await this.healthcheck()) {
       this.runStartupIndexing();
       this.registerEvents();
       this.addPromptCommands();
-      this.addSettingTab(new OllamaSettingTab(this.app, this));
     } else {
       new Notice(`The ${this.settings.llamaIndexUrl} is unreachable or not healthy. Skipping initialization.`);
+      new Notice(`When you fix this, you need to reload the plugin or restart obsidian.`);
     }
   }
 
@@ -40,7 +41,7 @@ export class Ollama extends Plugin {
     });
   }
 
-  onunload() {}
+  onunload() { }
 
   async loadSettings() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
@@ -67,9 +68,9 @@ export class Ollama extends Plugin {
       })
 
       if (response.status !== 200) {
-        throw Error(response.text) 
+        throw Error(response.text)
       }
-      
+
       if (this.settings.allowSuccessNotifications)
         new Notice(`Ollama indexing: ${response.text}`)
 
